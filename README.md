@@ -40,6 +40,8 @@ There are two ways you can run SudokuSolver.py:
 
 **BruteForce**: Systematically try filling in numbers until the solution is found. Starting from the top left of the board, it attempts to place numbers starting from 1 until one is found that meets sudoku rules. It will continue placing numbers until reaching a square in which no numbers fit. If this is the case, go back to the last square updated, increment it by 1, and try again. This is guaranteed to find a solution as long as the input is a valid sudoku. 
 
+**Draw**: Interactive board implementation using pygame. All updates to the interactive board need to be done using this class. This class includes a unique way of inputting a board by entering the numbers interactively, as well as a way to specify the size of the board if that is not inputted. 
+
 
 ## some fun puzzles to try: 
 
