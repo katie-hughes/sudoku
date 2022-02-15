@@ -1,11 +1,11 @@
-# Welcome to my sudoku solver!!! :)
+# welcome to my sudoku solver!!!
 
 My script `SudokuSolver.py` is an object-oriented approach to solving sudoku puzzles. It includes methods of working through the sudoku logically as well as a brute force approach. 
 
 There are two ways you can run SudokuSolver.py:
 1. `python3 SudokuSolver.py` <br />
   You can then enter in the size of the board and the numbers that fill each row at the prompts.
-2. `python3 oosudoku.py --nums .......` <br />
+2. `python3 oosudoku.py -n .......` <br />
   after "--nums", enter a list of numbers separated by spaces corresponding to the rows of the sudoku. For example, to enter the board:<br />
   
          _ _ _ _ 
@@ -17,12 +17,12 @@ There are two ways you can run SudokuSolver.py:
          _ _ _ _ 
         
 
-  run: `SudokuSolver.py --nums 0 0 3 4 3 4 1 2 0 1 4 0 0 3 0 0 ` . 
+  run: `SudokuSolver.py -n 0 0 3 4 3 4 1 2 0 1 4 0 0 3 0 0 ` . 
   
   
-  There is also an optional verbose argument `-v` that will print out more information about the steps taken while solving the sudoku. 
+  There is an optional verbose argument `-v` that will print out more information about the steps taken while solving the sudoku. 
   
-  I also implemented an interactive board using pygame. To view the interactive board, run the command with the `-i` flag. Numbers can be entered interactively while using this mode. 
+  I also implemented an interactive board using pygame. To view the interactive board, run the command with the `-i` flag. Numbers can be entered interactively while using this mode if you choose not to run with the `-n` command. 
 
 
 
@@ -44,14 +44,14 @@ There are two ways you can run SudokuSolver.py:
 ## some fun puzzles to try: 
 
 "Hardest Sudoku": https://www.telegraph.co.uk/news/science/science-news/9359579/Worlds-hardest-sudoku-can-you-crack-it.html. None of the logic-based methods are able to place any numbers, but it can be brute-forced:
-`--nums 8 0 0 0 0 0 0 0 0 0 0 3 6 0 0 0 0 0 0 7 0 0 9 0 2 0 0 0 5 0 0 0 7 0 0 0 0 0 0 0 4 5 7 0 0 0 0 0 1 0 0 0 3 0 0 0 1 0 0 0 0 6 8 0 0 8 5 0 0 0 1 0 0 9 0 0 0 0 4 0 0  `
+`-n 8 0 0 0 0 0 0 0 0 0 0 3 6 0 0 0 0 0 0 7 0 0 9 0 2 0 0 0 5 0 0 0 7 0 0 0 0 0 0 0 4 5 7 0 0 0 0 0 1 0 0 0 3 0 0 0 1 0 0 0 0 6 8 0 0 8 5 0 0 0 1 0 0 9 0 0 0 0 4 0 0  `
 
 
 Standard 9x9 sudoku that can be brute-forced very quickly:
-`--nums 0 1 0 0 0 9 7 0 3 0 8 0 0 6 0 0 0 0 6 0 0 0 0 0 0 0 9 0 0 9 0 7 0 0 3 0 0 6 0 0 9 0 2 0 0 3 0 1 0 0 5 0 7 0 0 0 8 0 0 3 0 0 7 0 0 0 0 0 0 3 0 0 0 3 0 0 5 0 4 0 8`
+`-n 0 1 0 0 0 9 7 0 3 0 8 0 0 6 0 0 0 0 6 0 0 0 0 0 0 0 9 0 0 9 0 7 0 0 3 0 0 6 0 0 9 0 2 0 0 3 0 1 0 0 5 0 7 0 0 0 8 0 0 3 0 0 7 0 0 0 0 0 0 3 0 0 0 3 0 0 5 0 4 0 8`
 
 Standard 9x9 sudoku that can be solved with only the logic methods: 
-`--nums 5 3 0 0 7 0 0 0 0 6 0 0 1 9 5 0 0 0 0 9 8 0 0 0 0 6 0 8 0 0 0 6 0 0 0 3 4 0 0 8 0 3 0 0 1 7 0 0 0 2 0 0 0 6 0 6 0 0 0 0 2 8 0 0 0 0 4 1 9 0 0 5 0 0 0 0 8 0 0 7 9 `
+`-n 5 3 0 0 7 0 0 0 0 6 0 0 1 9 5 0 0 0 0 9 8 0 0 0 0 6 0 8 0 0 0 6 0 0 0 3 4 0 0 8 0 3 0 0 1 7 0 0 0 2 0 0 0 6 0 6 0 0 0 0 2 8 0 0 0 0 4 1 9 0 0 5 0 0 0 0 8 0 0 7 9 `
 
 Test puzzle that I used a lot: 
-`-nums 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 8 5 0 0 1 0 2 0 0 0 0 0 0 0 5 0 7 0 0 0 0 0 4 0 0 0 1 0 0 0 9 0 0 0 0 0 0 0 5 0 0 0 0 0 0 7 3 0 0 2 0 1 0 0 0 0 0 0 0 0 4 0 0 0 9`
+`-n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 8 5 0 0 1 0 2 0 0 0 0 0 0 0 5 0 7 0 0 0 0 0 4 0 0 0 1 0 0 0 9 0 0 0 0 0 0 0 5 0 0 0 0 0 0 7 3 0 0 2 0 1 0 0 0 0 0 0 0 0 4 0 0 0 9`
