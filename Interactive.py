@@ -10,13 +10,15 @@ class Draw:
 		pygame.init()
 		self.fps = 500
 		self.fpsClock = pygame.time.Clock()
-		self.width = 800
+		self.info = pygame.display.Info()
+		print(self.info)
+		self.width = int((self.info.current_w)/3.)
 		self.window = pygame.display.set_mode((self.width, (int(self.width*1.2))))
 		pygame.display.set_caption("Sudoku Solver :)")
-		self.msg_size = 32
-		self.msg_font = pygame.font.SysFont('ubuntu',self.msg_size)
+		self.msg_size = int(self.info.current_w/60.)#32
+		self.msg_font = pygame.font.SysFont('UbuntuMono',self.msg_size)
 		self.large_size = 100
-		self.large_font = pygame.font.SysFont('ubuntu',self.large_size)
+		self.large_font = pygame.font.SysFont('UbuntuMono',self.large_size)
 		self.done = False
 
 		self.white = (255,255,255)
@@ -42,7 +44,7 @@ class Draw:
 		self.sqt = int(np.sqrt(self.size))
 
 		self.sq_size = int((self.width-2*self.buff)/self.size)
-		self.font = pygame.font.Font(pygame.font.get_default_font(), int(0.8*self.sq_size))
+		self.font = pygame.font.SysFont('UbuntuMono', int(0.8*self.sq_size))   #pygame.font.get_default_font()
 		self.board = np.zeros((self.size, self.size), dtype=int)
 
 		for r in range(self.size):
@@ -160,7 +162,8 @@ class Draw:
 		return msg_width
 
 	def FillFromScratch(self, board=None, mistake_box=False):
-		infomsg = "Click on the boxes to input the starting numbers."
+		print("we are filling from scratch!")
+		infomsg = "Click to input the starting numbers."
 		donemsg = "Press Enter to start solving!"
 		mistakemsg = "U have a mistake. Pls fix"
 		txt_height = self.msg_font.size(infomsg)[1]
@@ -211,6 +214,8 @@ class Draw:
 									brk = True
 									break
 								except ValueError:
+									pass
+								except AttributeError:
 									pass
 				elif event.type == 768:   #RETURN KEY. for some reason pygame.K_RETURN does not work...
 					b = False
