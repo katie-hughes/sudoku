@@ -4,8 +4,6 @@ import time
 import numpy as np
 import argparse
 
-import CurrentPlace
-
 
 class Draw:
 	def __init__(self, size):
