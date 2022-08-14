@@ -1,6 +1,5 @@
 import numpy as np
 import time
-import CurrentPlace
 
 from Interactive import Draw
 
