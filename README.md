@@ -2,11 +2,10 @@
 
 My script `SudokuSolver.py` is an object-oriented approach to solving sudoku puzzles. It includes methods of working through the sudoku logically as well as a brute force approach. 
 
-There are two ways you can run SudokuSolver.py:
-1. `python3 SudokuSolver.py` <br />
-  You can then enter in the size of the board and the numbers that fill each row at the prompts.
-2. `python3 oosudoku.py -n .......` <br />
-  after "--nums", enter a list of numbers separated by spaces corresponding to the rows of the sudoku. For example, to enter the board:<br />
+Main command:
+`python3 SudokuSolver.py` <br />
+There are some optional arguments you can include:
+* `-n` or `--nums`: follow this by a list of numbers separated by spaces corresponding to the rows of the sudoku. For example, to enter the board:<br />
   
          _ _ _ _ 
         |   |3 4| 
@@ -19,10 +18,11 @@ There are two ways you can run SudokuSolver.py:
 
   run: `SudokuSolver.py -n 0 0 3 4 3 4 1 2 0 1 4 0 0 3 0 0 ` . 
   
+  If you do not include this argument, there will be prompts to fill out the board later. 
   
-  There is an optional verbose argument `-v` that will print out more information about the steps taken while solving the sudoku. 
+  *`-v`: will print out more information about the steps taken while solving the sudoku. 
   
-  I also implemented an interactive board using pygame. To view the interactive board, run the command with the `-i` flag. Numbers can be entered interactively while using this mode if you choose not to run with the `-n` command. 
+  *`-i`: Will show the board and solving visually in an pop out window using pygame. Numbers can be entered interactively while using this mode if you choose not to run with the `-n` command. 
 
 
 
