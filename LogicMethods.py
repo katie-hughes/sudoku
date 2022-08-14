@@ -2,7 +2,6 @@ import numpy as np
 from itertools import combinations
 import time
 
-from BoardOperations import BoardOps
 from BoardPossibilities import Possibilities
 
 class Methods:
@@ -10,15 +9,16 @@ class Methods:
 	Uses the possibilities for each square to determine number placement.
 	Is not guaranteed to completely solve the sudoku.
 	"""
-	def __init__(self, board, verbose=False, interactive=False):
+	def __init__(self, board, ops, verbose=False, interactive=False):
 		self.board = board
 		self.size = len(board)
 		self.sqt = int(np.sqrt(self.size))
-		self.ops = BoardOps(board)
-		self.P = Possibilities(board, verbose=verbose, interactive=interactive)
+		self.ops = ops
+		self.P = Possibilities(board, ops, verbose=verbose, interactive=interactive)
 		self.n = 0
 		self.verbose = verbose
 		self.interactive = interactive
+		self.lightgreen = (153,255,170)
 	def naked_single(self):
 		# Check if there is only one option in the possibilities list
 		ret = 0
@@ -28,7 +28,7 @@ class Methods:
 					num = self.P.poss[x][y][0]
 					if self.verbose:
 						print("Naked Single: ", end="")
-					self.P.place(num, x, y)
+					self.P.place(num, x, y, color=self.lightgreen)
 					self.n += 1
 					ret += 1
 		return ret
@@ -47,7 +47,7 @@ class Methods:
 						if n in row_poss[z]:
 							if self.verbose:
 								print("Hidden Single (row): ", end="")
-							self.P.place(n, x, z)
+							self.P.place(n, x, z, color=self.lightgreen)
 							self.n += 1
 							ret += 1
 							break
@@ -61,7 +61,7 @@ class Methods:
 						if n in col_poss[z]:
 							if self.verbose:
 								print("Hidden Single (col): ", end="")
-							self.P.place(n, z, x)
+							self.P.place(n, z, x, color=self.lightgreen)
 							self.n += 1
 							ret += 1
 							break
@@ -82,7 +82,7 @@ class Methods:
 								if itr == index:
 									if self.verbose:
 										print("Hidden Single (box): ", end="")
-									self.P.place(n, self.sqt*w+b, self.sqt*x+c)
+									self.P.place(n, self.sqt*w+b, self.sqt*x+c, color=self.lightgreen)
 									self.n += 1
 									ret += 1
 								itr += 1

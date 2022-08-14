@@ -1,8 +1,6 @@
 import numpy as np
 
-from BoardOperations import BoardOps
 from Interactive import Draw
-import CurrentPlace
 
 class Possibilities:
 	"""
@@ -10,18 +8,15 @@ class Possibilities:
 	poss[x][y] is a list of possible numbers that could fit in board[x][y] .
 	Any updates to the possibilities list should be done through this class.
 	"""
-	def __init__(self,board,verbose=False,interactive=False):
+	def __init__(self,board,ops,verbose=False,interactive=False):
 		self.board = board
 		self.size = len(board)
 		self.sqt = int(np.sqrt(self.size))
 		self.poss = []
-		self.ops = BoardOps(board)
 		self.changes = 0
 		self.verbose = verbose
 		self.interactive = interactive
-		if self.interactive:
-			self.D = Draw(self.size)
-			self.D.FillFromBoard(self.board, update=False)
+		self.ops = ops
 		for x in range(self.size):
 			self.poss.append([])
 			for y in range(self.size):
@@ -102,18 +97,15 @@ class Possibilities:
 		c = col // self.sqt
 		return self.sqt*r+c
 	# Place number and update possibilities list accordingly
-	def place(self, num, row, col):
+	def place(self, num, row, col, color=None):
 		if self.verbose:
 			print("Placing ", num, " on row ", row, ", col ", col, sep='')
 		if self.ops.read(row, col) != 0:
 			print("\nThis board has no possible solution. Goodbye :( ")
 			exit()
 		else:
-			self.ops.place(row, col, num)
+			self.ops.place(row, col, num, color=color)
 			self.poss[row][col] = []
 			self.remove_poss_row(row, num)
 			self.remove_poss_col(col, num)
 			self.remove_poss_box(self.box_index(row, col), num)
-			CurrentPlace.current.append((row, col, num))
-			if self.interactive is True:
-				self.D.enterNumber(num, row, col, color=self.D.lightgreen)

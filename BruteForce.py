@@ -2,7 +2,6 @@ import numpy as np
 import time
 import CurrentPlace
 
-from BoardOperations import BoardOps
 from Interactive import Draw
 
 class Brute:
@@ -10,17 +9,14 @@ class Brute:
 	Systematically try filling in numbers until a valid sudoku is produced.
 	Guaranteed to find a solution! (If there is one)
 	"""
-	def __init__(self, b, verbose=False, interactive=False):
+	def __init__(self, b, ops, verbose=False, interactive=False):
 		self.board = b
 		self.size = len(b)
-		self.ops = BoardOps(self.board)
 		self.history = []
 		self.n = 0
 		self.verbose = verbose
 		self.interactive = interactive
-		if self.interactive:
-			self.D = Draw(self.size)
-			self.D.FillFromBoard(self.board, update=False)
+		self.ops = ops
 
 	def try_val(self, row, col, val):
 		# Attempt to place val at row, col; and check if it is valid.
@@ -29,9 +25,9 @@ class Brute:
 			board_init = np.array(self.board)
 			if self.verbose:
 				print(f"Trying {val} at row {row}, col {col}")
-			self.ops.place(row, col, val)
-			if self.interactive:
-				self.D.enterNumber(val, row, col, color=self.D.pink)
+			self.ops.place(row, col, val, color=(245,137,209))
+			#if self.interactive:
+			#	self.D.enterNumber(val, row, col, color=self.D.pink)
 			self.n += 1
 			check_row = self.ops.checkline(self.ops.selectrow(row, col))
 			check_col = self.ops.checkline(self.ops.selectcol(row, col))
@@ -41,7 +37,7 @@ class Brute:
 				return 1
 			else:
 				# Replace row, col with 0 again as val did not fit.
-				self.ops.place(row, col, 0)
+				self.ops.place(row, col, 0, color=(255,255,255))
 				return 0
 		else:
 			return -1
@@ -82,9 +78,6 @@ class Brute:
 							# If we've reached the maximum number, then nothing fit in this square
 							if self.verbose:
 								print("Nothing fit here :|")
-							if self.interactive:
-								#cover with white
-								self.D.enterNumber(0, r, c, color=self.D.white)
 							## Have to go back using history
 							if self.history == []:
 								print('Unsolvable ;(')
@@ -97,7 +90,7 @@ class Brute:
 								r = lr
 								c = lc
 								v = lv
-								self.ops.place(r, c, 0)
+								self.ops.place(r, c, 0, color=(255,255,255))
 					v += 1
 				c += 1
 			r += 1

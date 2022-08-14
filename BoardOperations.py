@@ -12,6 +12,9 @@ class BoardOps:
 		self.size = len(board)
 		self.sqt = int(np.sqrt(self.size))
 		self.interactive = interactive
+		if self.interactive:
+			self.D = Draw(self.size)
+			self.D.FillFromBoard(self.board)
 	def printnum(self,num):
 		if num < 10:
 			return str(num)
@@ -142,8 +145,14 @@ class BoardOps:
 		if done and sc:
 			print("\n\nSolved! Hooray!")
 			self.printboard()
-			exit()
-	def place(self, row, col, val):
+			if self.interactive:
+				self.D.spin()
+			return True
+		else:
+			return False
+	def place(self, row, col, val, color=None):
 		self.board[row][col] = val
+		if self.interactive is True:
+			self.D.enterNumber(val, row, col, color=color)
 	def read(self, row, col):
 		return self.board[row][col]

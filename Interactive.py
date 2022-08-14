@@ -3,7 +3,6 @@ from pygame.locals import *
 import time
 import numpy as np
 import argparse
-import thread6
 
 import CurrentPlace
 
@@ -11,22 +10,16 @@ import CurrentPlace
 class Draw:
 	def __init__(self, size):
 		pygame.init()
-		self.fps = 60
+		self.fps = 500
 		self.fpsClock = pygame.time.Clock()
 		self.width = 800
 		self.window = pygame.display.set_mode((self.width, (int(self.width*1.2))))
 		pygame.display.set_caption("Sudoku Solver :)")
-		self.size = size
-		self.sqt = int(np.sqrt(size))
-		self.buff = 50
-		self.sq_size = int((self.width-2*self.buff)/self.size)
-		self.font = pygame.font.Font(pygame.font.get_default_font(), int(0.8*self.sq_size))
-		self.msg_size = 24
+		self.msg_size = 32
 		self.msg_font = pygame.font.SysFont('ubuntu',self.msg_size)
+		self.large_size = 100
+		self.large_font = pygame.font.SysFont('ubuntu',self.large_size)
 		self.done = False
-
-		self.board = np.zeros((self.size, self.size), dtype=int)
-		#self.BO = BoardOps(self.board)
 
 		self.white = (255,255,255)
 		self.gray = (150,150,150)
@@ -41,6 +34,18 @@ class Draw:
 		self.halfline = 0.5*self.line
 
 		self.window.fill(self.white)
+
+		self.buff = 50
+		self.size = size
+		if self.size == 0:
+			self.choose_size()
+			self.window.fill(self.white)
+
+		self.sqt = int(np.sqrt(self.size))
+
+		self.sq_size = int((self.width-2*self.buff)/self.size)
+		self.font = pygame.font.Font(pygame.font.get_default_font(), int(0.8*self.sq_size))
+		self.board = np.zeros((self.size, self.size), dtype=int)
 
 		for r in range(self.size):
 			for c in range(0, self.size):
@@ -63,11 +68,79 @@ class Draw:
 			y2 = self.buff+(c*self.sqt)*self.sq_size
 			pygame.draw.line(self.window, self.black, (x1,y1), (x2,y2), self.line)
 
+		## putting some legend messages for the color coded boxes
+		startmsg = "Starting #s"
+		logicmsg = "Logic-ed #s"
+		bfmsg = "Brute Forced #s"
+
+		sw,sh = self.msg_font.size(startmsg)
+		lw,lh = self.msg_font.size(logicmsg)
+		bw,bh = self.msg_font.size(bfmsg)
+
+		freespace = self.width - sw - lw - bw
+		d = freespace/4
+
+		start = {'msg':startmsg, 'w':d, 'h':self.width*1.1, 'c':self.lightblue}
+		logic = {'msg':logicmsg, 'w':sw+2*d, 'h':self.width*1.1, 'c':self.lightgreen}
+		bf = {'msg':bfmsg, 'w':3*d+sw+lw, 'h':self.width*1.1, 'c':self.pink}
+
+		self.print_msg(start, color=start['c'])
+		self.print_msg(logic, color=logic['c'])
+		self.print_msg(bf, color=bf['c'])
+
 		self.update()
 
 	def update(self):
 		pygame.display.update()
 		self.fpsClock.tick(self.fps)
+
+	def choose_size(self):
+		four = {'msg':'4', 'w':self.buff, 'h':self.width/2}
+		nine = {'msg':'9', 'w':self.width/2-self.buff, 'h':self.width/2}
+		sixteen = {'msg':'16', 'w':self.width-4*self.buff, 'h':self.width/2}
+		infomsg = "Choose your board size!"
+		info = {'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width*0.25, 'c':None}
+		self.print_msg(info, color=info['c'])
+		self.print_large(four, color=self.purple)
+		self.print_large(nine, color=self.purple)
+		self.print_large(sixteen, color=self.purple)
+		sizeBool = True
+		while sizeBool:
+			for event in pygame.event.get():
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					x,y = event.pos
+					if self.large_isclicked(four, (x,y)):
+						self.size = 4
+						sizeBool = False
+						break
+					elif self.large_isclicked(nine, (x,y)):
+						self.size = 9
+						sizeBool = False
+						break
+					elif self.large_isclicked(sixteen, (x,y)):
+						self.size = 16
+						sizeBool = False
+						break
+
+	def print_large(self, msg, color=None):
+		w,h = self.large_font.size(msg['msg'])
+		s = (w if w>h else h)
+		s *= 1.2
+		if color is not None:
+			box = pygame.Rect(msg['w'], msg['h'], s, s)
+			outline = pygame.Rect(msg['w'], msg['h'], s, s)
+			pygame.draw.rect(self.window, color, box)
+			pygame.draw.rect(self.window, self.black, outline, 2)
+		self.window.blit(self.large_font.render(msg['msg'], True, self.black), (msg['w']-(w-s)/2, msg['h']))
+		self.update()
+
+	def large_isclicked(self, msg, pos):
+		x,y = pos
+		w,h = self.large_font.size(msg['msg'])
+		s = (w if w>h else h)
+		bw = msg['w']
+		bh = msg['h']
+		return ((bw <= x <= bw+s) and (bh <= y <= bh+s))
 
 	def print_msg(self, msg, color=None):
 		w,h = self.msg_font.size(msg['msg'])
@@ -89,8 +162,8 @@ class Draw:
 		return msg_width
 
 	def FillFromScratch(self, board=None, mistake_box=False):
-		infomsg = "Click on the boxes and enter your numbers."
-		donemsg = "Press Enter To Continue!"
+		infomsg = "Click on the boxes to input the starting numbers."
+		donemsg = "Press Enter to start solving!"
 		mistakemsg = "U have a mistake. Pls fix"
 		txt_height = self.msg_font.size(infomsg)[1]
 		info = {'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width, 'c':None}
@@ -172,10 +245,10 @@ class Draw:
 				if num != 0:
 					self.enterNumber(num, r, c, color=None, update=update)
 
-	def run(self):
-		#M = Methods(self.board,verbose=False)
-		#M.go()
-		#self.BO.update(self.board)
+	def spin(self):
+		infomsg = "Press ESC or click the X to exit."
+		info = {'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width, 'c':None}
+		self.print_msg(info, color=info['c'])
 		while not self.done:
 			pressed = pygame.key.get_pressed()
 			if pressed[K_ESCAPE]:
@@ -183,45 +256,6 @@ class Draw:
 			for event in pygame.event.get():
 				 if event.type == pygame.QUIT:
 					 self.done = True
-
-			if len(CurrentPlace.current)!=0:
-				fst = CurrentPlace.current[0]
-				r, c, n = fst
-				CurrentPlace.current = CurrentPlace.current[1:]
-				print(fst)
-				self.enterNumber(n, r, c, color=self.lightgreen)
-			else:
-				if self.BO.isdone():
-					print("DONE!")
 			pygame.event.pump()
 			self.fpsClock.tick(self.fps)
 		print("Goodbye!")
-
-
-
-"""
-parser = argparse.ArgumentParser(description='Solve a sudoku!')
-parser.add_argument('-n', '--nums', type=int, nargs='+', help='Numbers of the sudoku from top-left to bottom-right. Empty spaces should be denoted as 0. If not inputted, you will fill it out manually in a second!')
-args = parser.parse_args()
-if args.nums is not None:
-	nums = np.array(args.nums)
-	l = len(nums)
-	if (int(np.sqrt(l)))**2 != l:
-		print(f"Size must be a square. You inputted {l} numbers.")
-		exit()
-	size = int(np.sqrt(l))
-	if nums.max()>size or nums.min()<0:
-		print(f"All numbers must be within range of 0 - {size}!")
-		exit()
-	board = nums.reshape(size, size)
-	d = Draw(size)
-	d.FillFromBoard(board)
-	BF = Brute(board, verbose=True,threaded=True)
-	print("Hi")
-	thread6.run_threaded(d.bf_wrap())
-	thread6.run_threaded(BF.go())
-
-else:
-	d = Draw(9)
-	b = d.FillFromScratch()
-"""
