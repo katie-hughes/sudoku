@@ -16,6 +16,15 @@ global screen_width
 screen_width = screen_info.current_w
 pygame.quit()
 
+
+class Msg:
+	def __init__(self, message, width, height, color=None):
+		self.m = message
+		self.w = width
+		self.h = height
+		self.c = color
+
+
 class Draw:
 	def __init__(self, size):
 		pygame.init()
@@ -55,41 +64,39 @@ class Draw:
 		self.font = pygame.font.SysFont('UbuntuMono', int(0.8*self.sq_size))   #pygame.font.get_default_font()
 
 		# Defining the board border (lol) sizes
-		self.line = int(screen_width/(100))
-		print(self.line)
+		# If the board has more squares the lines are thinner.
+		self.line = int(screen_width/(25*self.size))
 		self.halfline = int(0.5*self.line)
-		# I feel like these should depend on the size of the board in some way.
-		# for example if there are lots of squares, the lines should be thinner
 
 
 		self.board = np.zeros((self.size, self.size), dtype=int)
 
+		# Drawing a gray box to surround each number space.
 		for r in range(self.size):
 			for c in range(0, self.size):
 				x = self.buff+c*self.sq_size
 				y = self.buff+r*self.sq_size
+				print(x,y)
 				rect = pygame.Rect(x, y, self.sq_size, self.sq_size)
 				pygame.draw.rect(self.window, self.gray, rect, self.halfline)
 
-		# Drawing the dark black square borders
+		# Drawing the dark black boarders around squares and the edges.
 		for r in range(self.sqt+1):
-			x1 = self.buff+(r*self.sqt)*self.sq_size
-			x2 = self.buff+(r*self.sqt)*self.sq_size
-			y1 = self.buff
-			y2 = self.buff+self.size*self.sq_size
-			pygame.draw.line(self.window, self.black, (x1,y1), (x2,y2), self.line)
+			x = self.buff+(r*self.sqt)*self.sq_size
+			y1 = self.buff - self.halfline
+			y2 = self.buff+self.size*self.sq_size + self.halfline
+			pygame.draw.line(self.window, self.black, (x,y1), (x,y2), self.line)
 
 		for c in range(self.sqt+1):
-			x1 = self.buff
-			x2 = self.buff+self.size*self.sq_size
-			y1 = self.buff+(c*self.sqt)*self.sq_size
-			y2 = self.buff+(c*self.sqt)*self.sq_size
-			pygame.draw.line(self.window, self.black, (x1,y1), (x2,y2), self.line)
+			x1 = self.buff #- self.halfline
+			x2 = self.buff+self.size*self.sq_size #+ self.halfline
+			y = self.buff+(c*self.sqt)*self.sq_size
+			pygame.draw.line(self.window, self.black, (x1,y), (x2,y), self.line)
 
 		## putting some legend messages for the color coded boxes
-		startmsg = "Starting #s"
-		logicmsg = "Logic-ed #s"
-		bfmsg = "Brute Forced #s"
+		startmsg = "Starting"
+		logicmsg = "Logic-ed"
+		bfmsg = "Brute Forced"
 
 		sw,sh = self.msg_font.size(startmsg)
 		lw,lh = self.msg_font.size(logicmsg)
