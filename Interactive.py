@@ -4,22 +4,32 @@ import time
 import numpy as np
 import argparse
 
+"""
+I need to do this outside the class, because if the class is called
+more than once, the screen size becomes updated to the window size, which is
+smaller than the screen. Then the new window created becomes tiny.
+Is there a way around this...?
+"""
+pygame.init()
+screen_info = pygame.display.Info()
+global screen_width
+screen_width = screen_info.current_w
+pygame.quit()
 
 class Draw:
 	def __init__(self, size):
 		pygame.init()
 		self.fps = 500
 		self.fpsClock = pygame.time.Clock()
-		self.info = pygame.display.Info()
-		print(self.info)
-		self.width = int((self.info.current_w)/3.)
+		self.width = int((screen_width)/3.)
 		self.window = pygame.display.set_mode((self.width, (int(self.width*1.2))))
 		pygame.display.set_caption("Sudoku Solver :)")
-		self.msg_size = int(self.info.current_w/60.)#32
-		self.msg_font = pygame.font.SysFont('UbuntuMono',self.msg_size)
-		self.large_size = 100
-		self.large_font = pygame.font.SysFont('UbuntuMono',self.large_size)
 		self.done = False
+
+		self.msg_size = int(screen_width/60.)#32
+		self.msg_font = pygame.font.SysFont('UbuntuMono',self.msg_size)
+		self.large_size = int((screen_width)/30.)
+		self.large_font = pygame.font.SysFont('UbuntuMono',self.large_size)
 
 		self.white = (255,255,255)
 		self.gray = (150,150,150)
@@ -30,21 +40,28 @@ class Draw:
 		self.purple = (184,143,205)
 		self.pink = (245,137,209)
 
-		self.line = 6
-		self.halfline = 0.5*self.line
-
 		self.window.fill(self.white)
 
-		self.buff = 50
+
+		self.buff = 10 #50
 		self.size = size
 		if self.size == 0:
 			self.choose_size()
 			self.window.fill(self.white)
 
 		self.sqt = int(np.sqrt(self.size))
-
 		self.sq_size = int((self.width-2*self.buff)/self.size)
+		# Number font:
 		self.font = pygame.font.SysFont('UbuntuMono', int(0.8*self.sq_size))   #pygame.font.get_default_font()
+
+		# Defining the board border (lol) sizes
+		self.line = int(screen_width/(100))
+		print(self.line)
+		self.halfline = int(0.5*self.line)
+		# I feel like these should depend on the size of the board in some way.
+		# for example if there are lots of squares, the lines should be thinner
+
+
 		self.board = np.zeros((self.size, self.size), dtype=int)
 
 		for r in range(self.size):
@@ -52,8 +69,9 @@ class Draw:
 				x = self.buff+c*self.sq_size
 				y = self.buff+r*self.sq_size
 				rect = pygame.Rect(x, y, self.sq_size, self.sq_size)
-				pygame.draw.rect(self.window, self.gray, rect, self.line)
+				pygame.draw.rect(self.window, self.gray, rect, self.halfline)
 
+		# Drawing the dark black square borders
 		for r in range(self.sqt+1):
 			x1 = self.buff+(r*self.sqt)*self.sq_size
 			x2 = self.buff+(r*self.sqt)*self.sq_size
@@ -262,3 +280,4 @@ class Draw:
 			pygame.event.pump()
 			self.fpsClock.tick(self.fps)
 		print("Goodbye!")
+		pygame.quit()
