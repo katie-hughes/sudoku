@@ -31,6 +31,7 @@ class Draw:
 		self.fps = 500
 		self.fpsClock = pygame.time.Clock()
 		self.width = int((screen_width)/3.)
+		print(f"WINDOW WIDTH: {self.width}")
 		self.window = pygame.display.set_mode((self.width, (int(self.width*1.2))))
 		pygame.display.set_caption("Sudoku Solver :)")
 		self.done = False
@@ -40,6 +41,7 @@ class Draw:
 		self.large_size = int((screen_width)/30.)
 		self.large_font = pygame.font.SysFont('UbuntuMono',self.large_size)
 
+		# Defining some commonly used colors
 		self.white = (255,255,255)
 		self.gray = (150,150,150)
 		self.black = (0,0,0)
@@ -51,8 +53,7 @@ class Draw:
 
 		self.window.fill(self.white)
 
-
-		self.buff = 10 #50
+		self.buff = int(self.width/15.) #50
 		self.size = size
 		if self.size == 0:
 			self.choose_size()
@@ -76,7 +77,6 @@ class Draw:
 			for c in range(0, self.size):
 				x = self.buff+c*self.sq_size
 				y = self.buff+r*self.sq_size
-				print(x,y)
 				rect = pygame.Rect(x, y, self.sq_size, self.sq_size)
 				pygame.draw.rect(self.window, self.gray, rect, self.halfline)
 
@@ -147,24 +147,24 @@ class Draw:
 						sizeBool = False
 						break
 
-	def print_large(self, msg, color=None):
-		w,h = self.large_font.size(msg['msg'])
+	def print_large(self, msg):
+		w,h = self.large_font.size(msg.m)
 		s = (w if w>h else h)
 		s *= 1.2
-		if color is not None:
-			box = pygame.Rect(msg['w'], msg['h'], s, s)
-			outline = pygame.Rect(msg['w'], msg['h'], s, s)
-			pygame.draw.rect(self.window, color, box)
+		if msg.c is not None:
+			box = pygame.Rect(msg.w, msg.h, s, s)
+			outline = pygame.Rect(msg.w, msg.h, s, s)
+			pygame.draw.rect(self.window, msg.c, box)
 			pygame.draw.rect(self.window, self.black, outline, 2)
-		self.window.blit(self.large_font.render(msg['msg'], True, self.black), (msg['w']-(w-s)/2, msg['h']))
+		self.window.blit(self.large_font.render(msg.m, True, self.black), (msg.w-(w-s)/2, msg.h))
 		self.update()
 
 	def large_isclicked(self, msg, pos):
 		x,y = pos
-		w,h = self.large_font.size(msg['msg'])
+		w,h = self.large_font.size(msg.m)
 		s = (w if w>h else h)
-		bw = msg['w']
-		bh = msg['h']
+		bw = msg.w
+		bh = msg.h
 		return ((bw <= x <= bw+s) and (bh <= y <= bh+s))
 
 	def print_msg(self, msg):
