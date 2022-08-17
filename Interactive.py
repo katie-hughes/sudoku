@@ -38,7 +38,7 @@ class Draw:
 
 		self.msg_size = int(screen_width/60.)#32
 		self.msg_font = pygame.font.SysFont('UbuntuMono',self.msg_size)
-		self.large_size = int((screen_width)/30.)
+		self.large_size = int((screen_width)/20.)
 		self.large_font = pygame.font.SysFont('UbuntuMono',self.large_size)
 
 		# Defining some commonly used colors
@@ -120,9 +120,17 @@ class Draw:
 		self.fpsClock.tick(self.fps)
 
 	def choose_size(self):
-		four = Msg('4', self.buff, self.width/2, self.purple) #{'msg':'4', 'w':self.buff, 'h':self.width/2}
-		nine = Msg('9', self.width/2-self.buff, self.width/2, self.purple)#{'msg':'9', 'w':self.width/2-self.buff, 'h':self.width/2}
-		sixteen = Msg('16', self.width-4*self.buff, self.width/2, self.purple) #{'msg':'16', 'w':self.width-4*self.buff, 'h':self.width/2}
+		m4 = '04'
+		m9 = '09'
+		m16 = '16'
+		w,h = self.large_font.size(m4) # I used monospaced so they should all be the same
+		s = (w if w>h else h)
+		print(s)
+		spacing = (self.width - 2*self.buff - 3*s)/2.
+		print(spacing)
+		four = Msg('04', self.buff, self.width/2, self.purple) #{'msg':'4', 'w':self.buff, 'h':self.width/2}
+		nine = Msg('09', self.buff+s+spacing, self.width/2, self.purple)#{'msg':'9', 'w':self.width/2-self.buff, 'h':self.width/2}
+		sixteen = Msg('16', self.buff+2*s+2*spacing, self.width/2, self.purple) #{'msg':'16', 'w':self.width-4*self.buff, 'h':self.width/2}
 		infomsg = "Choose your board size!"
 		info = Msg(infomsg, self.centermsg(infomsg), self.width*0.25) #{'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width*0.25, 'c':None}
 		self.print_msg(info)
