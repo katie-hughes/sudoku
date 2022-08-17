@@ -105,13 +105,13 @@ class Draw:
 		freespace = self.width - sw - lw - bw
 		d = freespace/4
 
-		start = {'msg':startmsg, 'w':d, 'h':self.width*1.1, 'c':self.lightblue}
-		logic = {'msg':logicmsg, 'w':sw+2*d, 'h':self.width*1.1, 'c':self.lightgreen}
-		bf = {'msg':bfmsg, 'w':3*d+sw+lw, 'h':self.width*1.1, 'c':self.pink}
+		start = Msg(startmsg, d, self.width*1.1, self.lightblue) #{'msg':startmsg, 'w':d, 'h':self.width*1.1, 'c':self.lightblue}
+		logic = Msg(logicmsg, sw+2*d, self.width*1.1, self.lightgreen) #{'msg':logicmsg, 'w':sw+2*d, 'h':self.width*1.1, 'c':self.lightgreen}
+		bf = Msg(bfmsg, 3*d+sw+lw, self.width*1.1, self.pink) #{'msg':bfmsg, 'w':3*d+sw+lw, 'h':self.width*1.1, 'c':self.pink}
 
-		self.print_msg(start, color=start['c'])
-		self.print_msg(logic, color=logic['c'])
-		self.print_msg(bf, color=bf['c'])
+		self.print_msg(start)
+		self.print_msg(logic)
+		self.print_msg(bf)
 
 		self.update()
 
@@ -120,15 +120,15 @@ class Draw:
 		self.fpsClock.tick(self.fps)
 
 	def choose_size(self):
-		four = {'msg':'4', 'w':self.buff, 'h':self.width/2}
-		nine = {'msg':'9', 'w':self.width/2-self.buff, 'h':self.width/2}
-		sixteen = {'msg':'16', 'w':self.width-4*self.buff, 'h':self.width/2}
+		four = Msg('4', self.buff, self.width/2, self.purple) #{'msg':'4', 'w':self.buff, 'h':self.width/2}
+		nine = Msg('9', self.width/2-self.buff, self.width/2, self.purple)#{'msg':'9', 'w':self.width/2-self.buff, 'h':self.width/2}
+		sixteen = Msg('16', self.width-4*self.buff, self.width/2, self.purple) #{'msg':'16', 'w':self.width-4*self.buff, 'h':self.width/2}
 		infomsg = "Choose your board size!"
-		info = {'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width*0.25, 'c':None}
-		self.print_msg(info, color=info['c'])
-		self.print_large(four, color=self.purple)
-		self.print_large(nine, color=self.purple)
-		self.print_large(sixteen, color=self.purple)
+		info = Msg(infomsg, self.centermsg(infomsg), self.width*0.25) #{'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width*0.25, 'c':None}
+		self.print_msg(info)
+		self.print_large(four)
+		self.print_large(nine)
+		self.print_large(sixteen)
 		sizeBool = True
 		while sizeBool:
 			for event in pygame.event.get():
@@ -167,17 +167,17 @@ class Draw:
 		bh = msg['h']
 		return ((bw <= x <= bw+s) and (bh <= y <= bh+s))
 
-	def print_msg(self, msg, color=None):
-		w,h = self.msg_font.size(msg['msg'])
-		if color is not None:
-			box = pygame.Rect(msg['w'], msg['h'], w, h)
-			pygame.draw.rect(self.window, color, box)
-		self.window.blit(self.msg_font.render(msg['msg'], True, self.black), (msg['w'], msg['h']))
+	def print_msg(self, msg):
+		w,h = self.msg_font.size(msg.m)
+		if msg.c is not None:
+			box = pygame.Rect(msg.w, msg.h, w, h)
+			pygame.draw.rect(self.window, msg.c, box)
+		self.window.blit(self.msg_font.render(msg.m, True, self.black), (msg.w, msg.h))
 		self.update()
 
 	def cover(self, msg):
-		w,h = self.msg_font.size(msg['msg'])
-		box = pygame.Rect(msg['w'], msg['h'], w, h)
+		w,h = self.msg_font.size(msg.m)
+		box = pygame.Rect(msg.w, msg.h, w, h)
 		pygame.draw.rect(self.window, self.white, box)
 		self.update()
 
@@ -192,11 +192,11 @@ class Draw:
 		donemsg = "Press Enter to start solving!"
 		mistakemsg = "U have a mistake. Pls fix"
 		txt_height = self.msg_font.size(infomsg)[1]
-		info = {'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width, 'c':None}
-		done = {'msg':donemsg, 'w':self.centermsg(donemsg), 'h':self.width+txt_height, 'c':None}
-		mistake = {'msg':mistakemsg, 'w':self.centermsg(mistakemsg), 'h':self.width+2*txt_height, 'c':None}
-		self.print_msg(info, color=info['c'])
-		self.print_msg(done, color=done['c'])
+		info = Msg(infomsg, self.centermsg(infomsg), self.width) #{'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width, 'c':None}
+		done = Msg(donemsg, self.centermsg(donemsg), self.width+txt_height) #{'msg':donemsg, 'w':self.centermsg(donemsg), 'h':self.width+txt_height, 'c':None}
+		mistake = Msg(mistakemsg, self.centermsg(mistakemsg), self.width+2*txt_height) #{'msg':mistakemsg, 'w':self.centermsg(mistakemsg), 'h':self.width+2*txt_height, 'c':None}
+		self.print_msg(info)
+		self.print_msg(done)
 
 		b = True
 		while b:
@@ -275,8 +275,8 @@ class Draw:
 
 	def spin(self):
 		infomsg = "Press ESC or click the X to exit."
-		info = {'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width, 'c':None}
-		self.print_msg(info, color=info['c'])
+		info = Msg(infomsg, self.centermsg(infomsg), self.width) #{'msg':infomsg, 'w':self.centermsg(infomsg), 'h':self.width, 'c':None}
+		self.print_msg(info)
 		while not self.done:
 			pressed = pygame.key.get_pressed()
 			if pressed[K_ESCAPE]:
